@@ -59,6 +59,8 @@ test('sign-in page: fills the screen, headline and name box usable, no errors', 
     for (const b of [hb, nb]) for (let i = 0; i <= 6; i++) pts.push([b.x + b.width * i / 6, b.y - 6], [b.x + b.width * i / 6, b.y + b.height + 6], [b.x + b.width + 6, b.y + b.height * i / 6]);
     for (const [x, y] of pts) { await page.mouse.move(x, y, { steps: 2 }); await collect(); }
     expect(seen.length, 'the cursor trail should produce frames').toBeGreaterThan(0);
+    // On a wide screen the empty space beside the headline is part of the playground: frames must appear there too.
+    if (hero.x + hero.width - (hb.x + hb.width) > 300) expect(seen.some((f) => f.x > hb.x + hb.width && f.y + f.height > hb.y && f.y < hb.y + hb.height), 'frames should appear beside the headline').toBe(true);
   }
   info.annotations.push({ type: 'trail frames observed', description: String(seen.length) });
   for (const sel of ['.hero h1', '#dev-login input[name=name]']) {

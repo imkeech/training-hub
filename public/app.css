@@ -110,5 +110,5 @@ body.cursor-on .cur{opacity:1}
 [hidden]{display:none !important}
 
 /* the text block always sits above the grid and the trail frames; frames shrink on phones */
-.hero .copy{position:relative;z-index:1}
+.hero .copy{position:relative;z-index:1;justify-self:start;max-width:100%} /* shrink to the words so the space beside the headline counts as empty */
 @media (max-width:640px){.frame{width:120px;height:83px}}

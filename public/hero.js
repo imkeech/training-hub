@@ -28,7 +28,8 @@
   const spawn = (x, y) => { if (live > 14 || wouldCover(x, y)) return false; const el = document.createElement('div'); el.className = 'frame'; el.style.left = x + 'px'; el.style.top = y + 'px'; el.style.setProperty('--r', rnd(-14, 14).toFixed(1) + 'deg');
     el.innerHTML = `<svg viewBox="0 0 150 104" xmlns="http://www.w3.org/2000/svg"><rect width="150" height="104" fill="var(--panel)"/>${designs[di++ % designs.length]()}</svg>`; trail.append(el); live++; el.addEventListener('animationend', () => { el.remove(); live--; }); return true; };
   if (reduce) return;
-  if (fine) hero.addEventListener('pointermove', (e) => { const b = hero.getBoundingClientRect(), x = e.clientX - b.left, y = e.clientY - b.top; const overCopy = !!e.target.closest('.copy'); const g = hero.querySelector('.grid'); g.style.setProperty('--mx', (x / b.width * 100) + '%'); g.style.setProperty('--my', (y / b.height * 100) + '%');
-    if (!overCopy && (lastX === null || Math.hypot(x - lastX, y - lastY) > 90) && spawn(x, y)) { lastX = x; lastY = y; } }, { passive: true });
+  // Frames follow the cursor anywhere in the hero; spawn() itself refuses spots that would touch the words or the form.
+  if (fine) hero.addEventListener('pointermove', (e) => { const b = hero.getBoundingClientRect(), x = e.clientX - b.left, y = e.clientY - b.top; const g = hero.querySelector('.grid'); g.style.setProperty('--mx', (x / b.width * 100) + '%'); g.style.setProperty('--my', (y / b.height * 100) + '%');
+    if ((lastX === null || Math.hypot(x - lastX, y - lastY) > 90) && spawn(x, y)) { lastX = x; lastY = y; } }, { passive: true });
   else { const ht = document.querySelector('.hint-text'); if (ht) ht.textContent = 'Your data, drifting through'; const auto = () => { if (hero.offsetParent === null) return setTimeout(auto, 1500); const b = hero.getBoundingClientRect(); for (let i = 0; i < 8; i++) if (spawn(b.width * rnd(.12, .88), b.height * rnd(.05, .95))) break; setTimeout(auto, 650); }; setTimeout(auto, 500); }
 })();
