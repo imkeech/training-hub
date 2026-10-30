@@ -11,7 +11,9 @@
     "dev": "node --experimental-sqlite --watch src/server.js",
     "sync": "node --experimental-sqlite src/sync.js",
     "test": "node --experimental-sqlite --import ./test/shim/register.js --test test/*.test.js",
-    "backup": "node --experimental-sqlite scripts/backup.js"
+    "backup": "node --experimental-sqlite scripts/backup.js",
+    "test:e2e": "playwright test",
+    "screenshots": "node scripts/screenshots.mjs"
   },
   "dependencies": {
     "cookie-session": "^2.1.0",

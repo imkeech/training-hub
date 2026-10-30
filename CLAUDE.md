@@ -3,7 +3,11 @@
 Read this first. It replaces the chat conversation where this project was designed.
 
 ## Who I am and what I want
-I am a beginner, not a developer. Explain things plainly, run commands for me, and after any change run `npm test` and tell me what you changed in one or two sentences. Ask before anything destructive (deleting data, changing `.env`, pushing anywhere).
+I am a beginner, not a developer. Explain things plainly, run commands for me, and after any change run `npm test` and tell me what you changed in one or two sentences. Ask before anything destructive (deleting data, changing `.env`).
+
+## Repo
+Repo: https://github.com/imkeech/training-hub. Commit and push after every green test run. Never commit `.env` or `data/`.
+Tell me the commit message each time. Branch is `main`; the repo root is this `hub/` folder.
 
 ## The idea
 Google's Fitbit app (now "Google Health", for my Fitbit Air band) is hard to read. I also use Hevy for lifting
@@ -15,7 +19,11 @@ Google's Fitbit app (now "Google Health", for my Fitbit Air band) is hard to rea
 It is for me first, then friends (each connects their own accounts), then everyone. Website first; phone app later as a web view.
 
 ## Current state (October 2026)
-- Node 22 + Express + built-in SQLite (`node:sqlite`). Two npm packages. 25 tests pass with `npm test`.
+- Node 22+ (this machine has 24) + Express + built-in SQLite (`node:sqlite`). Two runtime npm packages. 25 unit tests pass
+  with `npm test`; 6 browser tests (Playwright, Chromium, desktop 2560×1400 and phone 390×844) pass with `npm run test:e2e`.
+  `npm run screenshots` photographs the running app into `e2e/screenshots/` (git-ignored).
+- Fixed 30 Oct 2026: the sign-in page's decorative grid layer was sitting on top of the name box and Enter button, so
+  clicks never reached them; trail frames now also keep clear of the headline, text and form.
 - Works locally with a name-only "test mode" login (`ALLOW_DEV_LOGIN=true`, http only). Google sign-in needs
   `GOOGLE_CLIENT_ID/SECRET` in `.env`; Strava needs `STRAVA_CLIENT_ID/SECRET`; Hevy needs each user's API key (Hevy Pro).
 - The companion phone app (Android first) does NOT exist yet. Its contract is in `companion/README.md`. Until it exists,
@@ -23,7 +31,7 @@ It is for me first, then friends (each connects their own accounts), then everyo
 - Google Health API (cloud route for Fitbit Air) is a stub: Google must verify the app first.
 - The Hevy and Strava API calls were written from documentation, never run against live accounts. Expect field-name
   surprises; verify against real responses when I connect my accounts.
-- Nothing is hosted. No Git repo yet (please `git init` and commit as a first step).
+- Nothing is hosted. Code lives on GitHub (see Repo above); first commit "Training Hub starter" made 30 Oct 2026.
 
 ## Map of the code
 ```
@@ -39,6 +47,9 @@ src/sources/googlehealth.js  stub
 public/index.html|app.js|app.css|hero.js   the website (no framework, no build step)
 scripts/backup.js        nightly VACUUM INTO snapshot, keeps 14
 test/                    node:test; test/shim/ is a tiny Express look-alike used ONLY so HTTP tests run without npm install
+e2e/hub.spec.js          Playwright click-through tests (sign-in page checks, sign in → consent → demo → dashboard, dark mode)
+playwright.config.js     starts its own server on port 3100 with a throw-away DB; never touches data/hub.db
+scripts/screenshots.mjs  screenshots of the running app (npm run screenshots)
 ```
 
 ## Rules I want kept
@@ -50,13 +61,13 @@ test/                    node:test; test/shim/ is a tiny Express look-alike used
 - Timezone-aware day boundaries (user's timezone, default `TIMEZONE` env, never bare UTC).
 
 ## What I want next, in order
-1. `git init`, first commit, run `npm install` and `npm run dev`, confirm it opens at http://localhost:3000.
+1. ~~`git init`, first commit, `npm install`, `npm run dev`~~ done 30 Oct 2026.
 2. Help me connect Strava for real (register the app at strava.com/settings/api, fill `.env`), then fix whatever breaks.
 3. Same for Hevy once I have Hevy Pro.
 4. Build the Android companion app from `companion/README.md` (Kotlin, Health Connect changes API, WorkManager,
    pairing by token). That is what makes my Fitbit Air and my friends' Noise/Samsung watches work.
 5. Host it (small VPS or Render/Railway/Fly), Google sign-in, `ALLOW_DEV_LOGIN=false`, cron for sync and backup.
-6. Then: playwright tests that click through the UI, and swap `test/shim` for real Express in tests.
+6. ~~Playwright tests that click through the UI~~ done; still to do: swap `test/shim` for real Express in tests.
 
 ## Things I will probably ask and the honest answer
 - "Why no Google button?" → `GOOGLE_CLIENT_ID` is empty. Local use doesn't need it.
