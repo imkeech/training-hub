@@ -23,7 +23,7 @@ It is for me first, then friends (each connects their own accounts), then everyo
   with `npm test`; 6 browser tests (Playwright, Chromium, desktop 2560×1400 and phone 390×844) pass with `npm run test:e2e`.
   `npm run screenshots` photographs the running app into `e2e/screenshots/` (git-ignored).
 - Fixed 30 Oct 2026: the sign-in page's decorative grid layer was sitting on top of the name box and Enter button, so
-  clicks never reached them; trail frames now also keep clear of the headline, text and form.
+  clicks never reached them. Trail frames may pass behind the words (the text block is layered on top); they must never cover them.
 - Works locally with a name-only "test mode" login (`ALLOW_DEV_LOGIN=true`, http only). Google sign-in needs
   `GOOGLE_CLIENT_ID/SECRET` in `.env`; Strava needs `STRAVA_CLIENT_ID/SECRET`; Hevy needs each user's API key (Hevy Pro).
 - The companion phone app (Android first) does NOT exist yet. Its contract is in `companion/README.md`. Until it exists,

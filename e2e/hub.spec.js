@@ -63,10 +63,11 @@ test('sign-in page: fills the screen, headline and name box usable, no errors', 
     if (hero.x + hero.width - (hb.x + hb.width) > 300) expect(seen.some((f) => f.x > hb.x + hb.width && f.y + f.height > hb.y && f.y < hb.y + hb.height), 'frames should appear beside the headline').toBe(true);
   }
   info.annotations.push({ type: 'trail frames observed', description: String(seen.length) });
-  for (const sel of ['.hero h1', '#dev-login input[name=name]']) {
-    const box = await page.locator(sel).boundingBox();
-    for (const f of seen) expect(overlaps(f, box), `a trail frame at ${Math.round(f.x)},${Math.round(f.y)} covers ${sel}`).toBe(false);
-    expect(await onTop(sel), `${sel} is covered by something`).toBe(true);
+  // Frames may pass behind the words, but the headline and the name box must always be the top-most thing at their spot.
+  for (const sel of ['.hero h1', '#dev-login input[name=name]', '#dev-login button']) expect(await onTop(sel), `${sel} is covered by something`).toBe(true);
+  if (info.project.name !== 'phone') { // and the trail must actually visit the text area (it used to be excluded)
+    const hb = await h1.boundingBox();
+    expect(seen.some((f) => overlaps(f, hb)), 'frames should also appear behind the headline').toBe(true);
   }
 
   // Typing works.

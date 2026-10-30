@@ -56,9 +56,9 @@ select{font:inherit;padding:.6rem .9rem;border:1px solid var(--line);border-radi
 .hint{display:inline-flex; align-items:center; gap:.6rem; margin-top:1.4rem; font-size:.9rem; color:var(--ink2)}
 .hint b{display:inline-block; width:2.4rem; height:1px; background:var(--ink2)}
 .trail{position:absolute; inset:0; pointer-events:none; overflow:hidden}
-.frame{position:absolute; width:150px; height:104px; border-radius:10px; background:var(--panel); border:1px solid var(--line); box-shadow:0 18px 40px -18px rgba(0,0,0,.45); transform:translate(-50%,-50%) rotate(var(--r)) scale(.6); opacity:0; animation:frame 1.15s cubic-bezier(.2,.7,.2,1) forwards; overflow:hidden}
+.frame{position:absolute; width:150px; height:104px; border-radius:10px; background:var(--panel); border:1px solid var(--line); box-shadow:0 18px 40px -18px rgba(0,0,0,.45); transform:translate(-50%,-50%) rotate(var(--r)) scale(.6); opacity:0; animation:frame .95s cubic-bezier(.2,.7,.2,1) forwards; overflow:hidden}
 .frame svg{width:100%; height:100%; display:block}
-@keyframes frame{ 0%{opacity:0; transform:translate(-50%,-50%) rotate(var(--r)) scale(.6)} 12%{opacity:1; transform:translate(-50%,-50%) rotate(var(--r)) scale(1)} 70%{opacity:1} 100%{opacity:0; transform:translate(-50%,-62%) rotate(var(--r)) scale(.92)} }
+@keyframes frame{ 0%{opacity:0; transform:translate(-50%,-50%) rotate(var(--r)) scale(.6)} 8%{opacity:1; transform:translate(-50%,-50%) rotate(var(--r)) scale(1)} 70%{opacity:1} 100%{opacity:0; transform:translate(-50%,-62%) rotate(var(--r)) scale(.92)} }
 .hero .grid{position:absolute; inset:0; pointer-events:none; background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px); background-size:64px 64px; opacity:.28; mask-image:radial-gradient(60% 60% at var(--mx,70%) var(--my,40%),#000 0%,transparent 100%); -webkit-mask-image:radial-gradient(60% 60% at var(--mx,70%) var(--my,40%),#000 0%,transparent 100%)}
 
 /* custom cursor */
