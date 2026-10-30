@@ -1,0 +1,23 @@
+{
+  "name": "training-hub",
+  "version": "0.1.0",
+  "description": "One place for lifts, runs and heart data from any app or watch.",
+  "type": "module",
+  "engines": {
+    "node": ">=22.5"
+  },
+  "scripts": {
+    "start": "node --experimental-sqlite src/server.js",
+    "dev": "node --experimental-sqlite --watch src/server.js",
+    "sync": "node --experimental-sqlite src/sync.js",
+    "test": "node --experimental-sqlite --import ./test/shim/register.js --test test/*.test.js",
+    "backup": "node --experimental-sqlite scripts/backup.js"
+  },
+  "dependencies": {
+    "cookie-session": "^2.1.0",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1"
+  }
+}

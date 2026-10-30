@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Training Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/app.css">
+</head>
+<body>
+<div class="cur" aria-hidden="true"><div class="ring"></div><div class="dot"></div></div>
+<header class="top"><a class="brand" href="/"><i></i>Training Hub</a><nav id="nav"></nav></header>
+
+<main id="signed-out" hidden>
+  <section class="hero wrap" id="hero">
+    <div class="grid" aria-hidden="true"></div>
+    <div class="trail" aria-hidden="true"></div>
+    <div class="copy">
+    <h1><span>Three apps.</span><span class="two">one body.</span></h1>
+    <p>Hevy logs the lifts. Strava logs the runs. Your watch logs your heart, sleep and breath. Training Hub reads them together, so a workout is one story instead of three screenshots.</p>
+    <div class="row">
+      <a class="btn" id="google-login" href="/auth/google"><i></i>Sign in with Google</a>
+      <form id="dev-login" hidden class="row"><input name="name" placeholder="Your name" required aria-label="Your name"><button class="btn">Enter (test mode)</button></form>
+      <p id="no-login" hidden class="muted">Sign-in isn't set up on this server yet. The owner needs to add Google sign-in (see README).</p>
+    </div>
+    <p id="dev-note" hidden class="muted small">Test mode: no password, just a name, for trying it on your own computer. Google sign-in appears once GOOGLE_CLIENT_ID is set in .env.</p>
+    <div class="hint"><b></b><span class="hint-text">Move your cursor over the empty space</span></div>
+    </div>
+  </section>
+</main>
+
+<main id="signed-in" hidden class="wrap">
+  <section id="consent" hidden>
+    <h2>Before we start</h2>
+    <div class="card consent">
+      <p><b>What is collected.</b> Workouts (sets, reps, weights, distance, pace), heart-rate samples, sleep, SpO2, breathing rate, skin-temperature variation, steps and calories, from the apps and devices you connect. Nothing else from those accounts.</p>
+      <p><b>Who sees it.</b> You. The server owner can technically access the database and promises not to look. Friends see only a weekly count, volume and distance, and only if you both opt in.</p>
+      <p><b>Where it lives.</b> On this server, encrypted at rest for tokens, backed up nightly. It is never sold or shared with advertisers.</p>
+      <p><b>Leaving.</b> Disconnect any app at any time. "Delete my account" removes every record immediately, backups included within 14 days.</p>
+      <p><b>Not medical advice.</b> Readiness, load and calorie numbers are estimates for training decisions, not diagnoses.</p>
+      <label class="row"><input type="checkbox" id="agree"> I understand and agree</label>
+      <div class="row"><button class="btn" id="consent-go" disabled>Continue</button><button class="btn ghost" id="consent-no">Sign out</button></div>
+    </div>
+  </section>
+
+  <section id="today">
+    <h2>Today</h2>
+    <p class="lede" id="note">—</p>
+    <div id="warn" class="warn" hidden></div>
+    <div id="profile-nudge" class="muted" hidden>Estimates use default age and weight. <a href="#profile">Fill in your profile</a> for accurate calories and effort.</div>
+    <div class="row gap"><button class="btn small" id="demo-load">Load demo data</button><button class="btn small ghost" id="demo-clear" hidden>Remove demo data</button><span class="muted" id="demo-out">Nothing connected yet? Load six weeks of sample training to see every screen working.</span></div>
+  </section>
+
+  <section id="connections">
+    <h2>Connections</h2>
+    <p class="lede">Each one is yours alone. Disconnect any time; deleting your account removes everything.</p>
+    <div class="cards">
+      <article class="card" data-src="strava"><h3>Strava</h3><p>Runs, rides, walks, and heart rate if your watch recorded it.</p><div class="status"></div><div class="act"><a class="btn small" href="/auth/strava">Connect Strava</a></div></article>
+      <article class="card" data-src="hevy"><h3>Hevy</h3><p>Sets, reps and weights. Needs Hevy Pro: copy your key from Settings → Developer.</p><div class="status"></div>
+        <form class="act" id="hevy-form"><input name="apiKey" placeholder="Paste Hevy API key" aria-label="Hevy API key" autocomplete="off"><button class="btn small" id="hevy-go" disabled>Connect</button></form></article>
+      <article class="card" data-src="healthconnect"><h3>Your watch, via your phone</h3><p>Noise, Samsung, Fitbit Air, boAt, Amazfit, Apple Watch: whatever writes to Health Connect or Apple Health. Pair the companion app once.</p><div class="status"></div>
+        <div class="act"><button class="btn small" id="pair-android">Pair Android phone</button><button class="btn small ghost" id="pair-ios">Pair iPhone</button></div>
+        <div class="pair" id="pair-out" hidden></div></article>
+      <article class="card" data-src="googlehealth" id="gh-card" hidden><h3>Google Health (cloud)</h3><p>Direct Fitbit Air / Pixel Watch sync, for accounts on the test list while Google reviews the app.</p><div class="status"></div><div class="act"><a class="btn small" href="/auth/googlehealth">Connect</a></div></article>
+    </div>
+    <div class="row gap"><button class="btn small ghost" id="sync">Sync now</button><span id="sync-out" class="muted"></span></div>
+  </section>
+
+  <section id="week">
+    <h2>Last 7 days</h2>
+    <div class="tiles">
+      <div class="tile"><small>Sessions</small><b id="w-sessions">—</b><span id="d-sessions" class="muted"></span></div>
+      <div class="tile"><small>Lifting volume</small><b id="w-volume">—</b><span id="d-volume" class="muted"></span></div>
+      <div class="tile"><small>Running</small><b id="w-km">—</b><span id="d-km" class="muted"></span></div>
+      <div class="tile"><small>Sleep (avg)</small><b id="w-sleep">—</b><span id="d-sleep" class="muted"></span></div>
+      <div class="tile"><small>Resting HR (avg)</small><b id="w-rhr">—</b><span id="d-rhr" class="muted"></span></div>
+    </div>
+  </section>
+
+  <section id="loadsec">
+    <h2>Training load vs recovery, last 6 weeks</h2>
+    <p class="lede">Bars are daily load (duration × intensity). Lines are your 7-day and 28-day averages; when the short one runs far above the long one you are ramping faster than your body has adapted to.</p>
+    <div class="card"><div class="chart" id="loadchart"></div><div class="legend" id="loadlegend"></div></div>
+  </section>
+
+  <section id="records">
+    <h2>Personal records</h2>
+    <div class="cards" id="reclist"></div>
+    <p class="empty static" id="rec-empty" hidden>Records appear once there are sessions to compare.</p>
+  </section>
+
+  <section id="last">
+    <h2>Last session</h2>
+    <article class="session">
+      <div class="head"><h3 id="ls-title">—</h3><span id="ls-meta" class="muted"></span></div>
+      <div class="scrub" id="scrub"><svg viewBox="0 0 1000 300" preserveAspectRatio="none" aria-hidden="true"><path id="area"></path><path id="line"></path></svg><div class="play" id="play" hidden></div><p class="empty" id="scrub-empty" hidden>No heart-rate samples for this window yet. Pair your phone or wear your watch to Strava-record it.</p></div>
+      <div class="readout">
+        <div><small>Time</small><b id="r-time">—</b></div><div><small>Heart rate</small><b id="r-hr">—</b></div><div><small>Exercise</small><b id="r-ex">—</b></div><div><small>Set</small><b id="r-set">—</b></div>
+      </div>
+      <div class="costbox" id="costbox" hidden>
+        <p class="muted" id="cost-summary"></p>
+        <table><thead><tr><th>Exercise</th><th class="num">Sets</th><th class="num">Avg HR</th><th class="num">Peak</th><th class="num">Recovered by</th></tr></thead><tbody id="cost-rows"></tbody></table>
+        <p class="muted" id="cost-note" hidden>Exercise windows are estimated evenly across the session until the lifting app provides set times.</p>
+      </div>
+    </article>
+  </section>
+
+  <section id="compare">
+    <h2>Compare two sessions</h2>
+    <div class="row"><select id="cmp-a" aria-label="First session"></select><span class="muted">vs</span><select id="cmp-b" aria-label="Second session"></select></div>
+    <div class="tablebox" id="cmp-out" hidden><table><thead><tr><th>Metric</th><th class="num" id="cmp-ha">A</th><th class="num" id="cmp-hb">B</th><th class="num">Change</th></tr></thead><tbody id="cmp-rows"></tbody></table></div>
+  </section>
+
+  <section id="friends">
+    <h2>Friends</h2>
+    <p class="lede">Opt in to share a weekly count, volume and distance with people who add you back. Nothing else is shared.</p>
+    <label class="row"><input type="checkbox" id="share"> Share my weekly activity with mutual friends</label>
+    <form id="friend-form" class="row"><input name="email" type="email" placeholder="Friend's sign-in email" aria-label="Friend's email"><button class="btn small">Add friend</button></form>
+    <p class="muted" id="friend-status"></p>
+    <div class="tablebox" id="board" hidden><table><thead><tr><th>This week</th><th class="num">Sessions</th><th class="num">Volume kg</th><th class="num">Km</th><th class="num">Load</th></tr></thead><tbody id="board-rows"></tbody></table></div>
+  </section>
+
+  <section id="profile">
+    <h2>Profile</h2>
+    <p class="lede">Used for calorie and effort estimates and for day boundaries. Stored only here.</p>
+    <form id="profile-form" class="row">
+      <input name="age" type="number" min="10" max="100" placeholder="Age" aria-label="Age">
+      <input name="weight_kg" type="number" min="25" max="300" step="0.1" placeholder="Weight kg" aria-label="Weight in kg">
+      <input name="max_hr" type="number" min="100" max="230" placeholder="Max HR (optional)" aria-label="Max heart rate">
+      <input name="timezone" placeholder="Timezone e.g. Asia/Kolkata" aria-label="Timezone">
+      <button class="btn small">Save</button><span class="muted" id="profile-out"></span>
+    </form>
+  </section>
+
+  <section id="feed">
+    <h2>All sessions</h2>
+    <div class="tablebox"><table><thead><tr><th>Date</th><th>App</th><th>Session</th><th class="num">Min</th><th class="num">Volume kg</th><th class="num">Km</th><th class="num">Avg HR</th><th class="num">Peak</th><th class="num">Kcal</th></tr></thead><tbody id="rows"></tbody></table></div>
+    <p class="empty static" id="feed-empty" hidden>Nothing yet. Connect a source above, then press Sync now.</p>
+  </section>
+
+  <section id="danger"><button class="btn small ghost" id="logout">Sign out</button> <button class="btn small danger" id="delete">Delete my account and all data</button></section>
+</main>
+<script src="/hero.js"></script>
+<script src="/app.js"></script>
+</body>
+</html>
